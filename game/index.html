@@ -1,0 +1,323 @@
+
+<!-- ##### ANURAG's Nagarro Assignment ##### -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<style>
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 500;
+    height: 500;
+
+}
+
+
+</style>
+	
+</head>
+
+</html>
+<h2>Game Rules</h2>
+<p align="left">
+	<ul>
+		<b>**** Mouse is must to play this game  ****</b><br/><br/>
+		<li>
+			Use left,right , up and down keys to move in the correponding direction.(Use mouse to move your body to a particular direction)
+		</li>
+		<li>
+			Use mouse pointer to decide the angle on which you wanna shoot and then left click mouse (or laptop touch pad) to shoot the enemy.
+			And there is a special attack available which fires three bullets concurrently. (Use right click of mouse for this special attack)
+		</li>
+		<li>
+			Two types oh health in games:
+			Yellow: It would increase your power 
+			Blue : It would increase your firing speed.(.ie speed at wich you can fire bullet)
+		</li>
+		<li>
+			Also you can pause the game whenever you by using space bar .
+		</li>
+		<br/><br/>
+	</ul>
+	
+
+</p>
+
+	
+
+<canvas  onclick="myFunction()" id="ctx" align="center" width="500" height="500" style="border:1px solid #000000; "></canvas>
+<br/><br/><br/><br/><br/>
+
+<script src="js/Entities.js"></script>
+<script language="javascript" src="js/sound.js" type="text/javascript"></script>
+<script language="javascript" src="js/jquery-3.3.1.js" type="text/javascript"></script>
+<script> 
+var ctx = document.getElementById("ctx").getContext("2d"); 
+ctx.font = '30px Arial';
+ctx.mozImageSmoothingEnabled = false;	// ## ANURAG ##better graphics for pixel art
+ctx.msImageSmoothingEnabled = false;
+ctx.imageSmoothingEnabled = false;
+	
+var gameOver=false;	
+
+var TILE_SIZE = 32;	
+var WIDTH = 500;
+var HEIGHT = 500;
+var timeWhenGameStarted = Date.now();	// ## ANURAG ##return time in ms
+
+var frameCount = 0;
+
+var score = 0;
+
+var paused = false;
+
+var Img = {};
+Img.player = new Image();
+Img.player.src = "img/hero.png";
+Img.bat = new Image();
+Img.bat.src = 'img/bat.png';
+Img.bee = new Image();
+Img.bee.src = 'img/bee.png';
+Img.mons = new Image();
+Img.mons.src = 'img/bm.png';
+
+Img.bullet = new Image();
+Img.bullet.src = 'img/bullet.png';
+Img.bullet2=new Image();
+Img.bullet2.src='img/bullet2.png';
+Img.upgrade1 = new Image();
+Img.upgrade1.src = 'img/upgrade1.png';
+Img.upgrade2 = new Image();
+Img.upgrade2.src = 'img/upgrade2.png';
+
+testCollisionRectRect = function(rect1,rect2){
+	return rect1.x <= rect2.x+rect2.width 
+		&& rect2.x <= rect1.x+rect1.width
+		&& rect1.y <= rect2.y + rect2.height
+		&& rect2.y <= rect1.y + rect1.height;
+}
+
+document.onmousedown = function(mouse){
+	if(mouse.which === 1)
+		player.pressingMouseLeft = true;
+	else
+		player.pressingMouseRight = true;
+}
+document.onmouseup = function(mouse){
+	if(mouse.which === 1)
+		player.pressingMouseLeft = false;
+	else
+		player.pressingMouseRight = false;
+}
+document.oncontextmenu = function(mouse){
+	mouse.preventDefault();
+}
+
+document.onmousemove = function(mouse){
+	var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+	var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+	
+	mouseX -= WIDTH/2;
+	mouseY -= HEIGHT/2;
+	
+	player.aimAngle = Math.atan2(mouseY,mouseX) / Math.PI * 180;
+}
+
+document.onkeydown = function(event){
+    if(event.keyCode === 39)    // ## ANURAG ##right
+        player.pressingRight = true;
+    else if(event.keyCode === 40)   // ## ANURAG ##down
+        player.pressingDown = true;
+    else if(event.keyCode === 37) // ## ANURAG ##left
+        player.pressingLeft = true;
+    else if(event.keyCode === 38) // ## ANURAG ## up
+        player.pressingUp = true;
+        
+    else if(event.keyCode === 32) // ## ANURAG ##pause
+        paused = !paused;
+}
+
+document.onkeyup = function(event){
+    if(event.keyCode === 39)    // ## ANURAG ##right
+        player.pressingRight = false;
+    else if(event.keyCode === 40)   // ## ANURAG ##down
+        player.pressingDown = false;
+    else if(event.keyCode === 37) // ## ANURAG ##left
+        player.pressingLeft = false;
+    else if(event.keyCode === 38) // ## ANURAG ## up
+        player.pressingUp = false;
+}
+
+update = function(){
+	if(paused){
+		ctx.fillText('Paused',WIDTH/2,HEIGHT/2);
+		return;
+	}
+	
+	ctx.clearRect(0,0,WIDTH,HEIGHT);
+	Maps.current.draw();
+	frameCount++;
+	// ## ANURAG ##score++;
+	
+	
+	Bullet.update();
+	Upgrade.update();
+	Enemy.update();
+	
+	player.update();
+	
+	ctx.fillText(player.hp + " Power",0,30);
+	ctx.fillText('Score: ' + score,200,30);
+}
+
+
+
+// ## ANURAG ## to have the sounf effect
+
+
+// ## ANURAG ## var myMusic;
+
+   
+// ## ANURAG ##     myMusic = new sound("gametheme.mp3");
+
+
+// ## ANURAG ## function sound(src) {
+// ## ANURAG ##     this.sound = document.createElement("audio");
+// ## ANURAG ##     this.sound.src = src;
+// ## ANURAG ##     this.sound.setAttribute("preload", "auto");
+// ## ANURAG ##     this.sound.setAttribute("controls", "none");
+// ## ANURAG ##     this.sound.style.display = "none";
+// ## ANURAG ##     document.body.appendChild(this.sound);
+// ## ANURAG ##     this.play = function(){
+// ## ANURAG ##         this.sound.play();
+// ## ANURAG ##     }
+// ## ANURAG ##     this.stop = function(){
+// ## ANURAG ##         this.sound.pause();
+// ## ANURAG ##     }
+// ## ANURAG ## }
+
+// ## ANURAG ## function playSound() {
+    
+// ## ANURAG ##     myMusic.play();
+   
+// ## ANURAG ## }
+
+// ## ANURAG ## function stopSound(){
+// ## ANURAG ## 	myMusic.stop();
+// ## ANURAG ## }
+
+
+
+function restartSetup(){
+	// ## ANURAG ## Create gradient
+var grd = ctx.createRadialGradient(75,50,5,90,60,100);
+grd.addColorStop(0,"red");
+grd.addColorStop(1,"white");
+
+// ## ANURAG ## Fill with gradient
+ctx.fillStyle = "#000000";
+ctx.fillRect(0,0,500,500);
+ctx.fillStyle = "#FF0000";
+ctx.font = "30px Arial";
+ctx.fillText("Click to restart the Game",50,250);
+}
+
+
+
+// ## ANURAG ## functon called when canvas is clicked
+function myFunction(){
+	if(gameOver==true){
+		startNewGame();
+       startGame=setInterval(update,40);
+       gameOver=false;
+	}
+}
+// ## ANURAG ## ctx.addEventListener('click', function(evt) { 
+
+	
+		
+
+// ## ANURAG ## 	}, false);
+
+restartNewGame=function(){
+	gameOver=true;
+     restartSetup();
+	clearInterval(startGame);
+	
+  
+}
+startNewGame = function(){
+
+ // ## ANURAG ##    // ## ANURAG ##stopSound();
+	player.hp = 10;
+	timeWhenGameStarted = Date.now();
+	frameCount = 0;
+	score = 0;
+	Enemy.list = {};
+	Upgrade.list = {};
+	Bullet.list = {};
+	Enemy.randomlyGenerate();
+	Enemy.randomlyGenerate();
+	Enemy.randomlyGenerate();
+	// ## ANURAG ##playSound();
+	
+}
+
+Maps = function(id,imgSrc,grid){
+	var self = {
+		id:id,
+		image:new Image(),
+		width:grid[0].length * TILE_SIZE,
+		height:grid.length * TILE_SIZE,
+		grid:grid,
+	}
+	self.image.src = imgSrc;
+	
+	self.isPositionWall = function(pt){
+		var gridX = Math.floor(pt.x / TILE_SIZE);
+		var gridY = Math.floor(pt.y / TILE_SIZE);
+		if(gridX < 0 || gridX >= self.grid[0].length)
+			return true;
+		if(gridY < 0 || gridY >= self.grid.length)
+			return true;
+		return self.grid[gridY][gridX];
+	}
+	
+	self.draw = function(){
+		var x = WIDTH/2 - player.x;
+		var y = HEIGHT/2 - player.y;
+		ctx.drawImage(self.image,0,0,self.image.width,self.image.height,x,y,self.image.width*2,self.image.height*2);
+	}
+	return self;
+}
+
+var array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 502, 502, 502, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 502, 502, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+ 
+
+
+
+// ## ANURAG ## to convert 1d array to 2 d array
+var array2D = [];
+for(var i = 0 ; i < 40; i++){
+	array2D[i] = [];
+	for(var j = 0 ; j < 40; j++){
+		array2D[i][j] = array[i * 40 + j];
+	}
+}
+
+Maps.current = Maps('field','img/map.png',array2D);
+
+
+
+player = Player();
+startNewGame();
+
+var startGame=setInterval(update,40);
+
+
+
+
+</script>
