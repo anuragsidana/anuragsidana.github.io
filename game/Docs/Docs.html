@@ -1,0 +1,109 @@
+
+<!-- ##### ANURAG's Nagarro Assignment ##### -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Game Docs</title>
+<style>
+body
+{
+font-size:25px;
+padding: 70px;
+    border: 1px solid #4CAF50;
+}
+</style>
+	
+</head>
+<body>
+
+<ul>
+
+  <h3><u>Implementation Approach and Souce code Organization</u></h3>
+  <br/>
+
+  <li>
+     I tried to add more advance functinalities to the game which were given us as assignment. 
+  Hence the starting steps were same as we were directed to do in the assignment pdf.
+  <br/>That pdf helped me alot in building my basics and implementing initial code. At first my game was having a basics player object and an enemy object , with player having the basic feature of shooting and killing the enemy. Also the score corresponding to the player and its remaing power(health) performance was being shown on the screen.<title>HTML Reference</title>Also the enemies could only come from the upward direction and the player is at bottom line stopping enmies from crossing the bottom line.
+  This was the basic functionality.
+  </li>
+ 
+
+<br/>
+<br/>
+  <li>
+     Now after this first of all I tried to optimize my code in the object oriented way:(hence my current code has been designed in oo design manner ,, hence esy to optimize ***)
+     <br/> Now after this I added the following functionalities in my app:
+<br/><br/>
+    <ol>
+     
+      <li> <b>Player</b>:(Player class overrides the Actor)
+     I added two types of shoots in the player object :
+     First , when the left button of mouse is pressed and 2nd when the right button is pressed.(This has been named as a special attack)
+
+     I used sprite animations to show the movement of players and enemies so that it looks more real. Also the direction of shooting is being controlled thorugh the mouse.</li>
+     <br/>
+      <li> <b>Enemy</b>:(Enemy Class overrides the parent class Actor)
+     I also gave the enemy a power to shoot, the bullets are being fired by eneies at regular intervals at the direction of player .
+     One more intersting thing . Now the enemies can come from any direction and these will always keep following the player.( :P :P )
+     One intersting thingabout the bulets thrwon by the enemies is that it disappears after a time span defined by me inside the code.
+</li>
+<br/>
+      <li>
+
+        
+    <b>Update</b>: (class for two types of update objects)
+           I created a new class which is responsible for creating two types of health objects in the game. i.e Two healths (+ sign in game) are being generated in the game at random places.
+             First Type(Yellow): When user collides with this health its power increases by an amount of 4.
+             Second Type(Purple): When user collides with this health its attacking speed increases by a conciderable amount. 
+
+      </li>
+      <br/>
+      <li>
+        
+     <b>Map</b>:It basically represent the background of the game. Its basically an imgage, but we cant go to certain places ie (Stones , house, doors etc), Used map collision for the same.
+
+      </li>
+
+    
+    </ol>
+
+  
+   
+
+   
+  </li>
+
+<br/><br/>
+
+
+
+  <li>
+    Structural Knowledge:
+          Heierarchy of my classes
+<br/><br/>
+          Entity&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Map(Different Class)<br/>
+             |<br/>
+             |<br/>
+          Actor,Update<br/>
+            |<br/>
+            |<br/>
+          Player, Enemy<br/>
+  </li>
+     
+
+
+    
+
+
+
+  
+
+
+
+</ul>
+  
+</body>
+
+
+</html>
