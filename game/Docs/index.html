@@ -22,17 +22,17 @@ padding: 70px;
   <br/>
 
   <li>
-     I tried to add more advance functinalities to the game which were given us as assignment. 
+     I tried to add  advanced functinalities to the game which were given us as an assignment. 
   Hence the starting steps were same as we were directed to do in the assignment pdf.
-  <br/>That pdf helped me alot in building my basics and implementing initial code. At first my game was having a basics player object and an enemy object , with player having the basic feature of shooting and killing the enemy. Also the score corresponding to the player and its remaing power(health) performance was being shown on the screen.<title>HTML Reference</title>Also the enemies could only come from the upward direction and the player is at bottom line stopping enmies from crossing the bottom line.
-  This was the basic functionality.
+  <br/>That pdf helped me a lot in building my basics and implementing initial code. At first my game was having a basic player object and an enemy object , with player having the basic feature of shooting and killing the enemy.The score corresponding to the player and its remaing power(health) performance was being shown on the screen.Also the enemies could only come from the upward direction and the player is at bottom line stopping enemies from crossing the bottom line.
+  <br/>This was the basic functionality.
   </li>
  
 
 <br/>
 <br/>
   <li>
-     Now after this first of all I tried to optimize my code in the object oriented way:(hence my current code has been designed in oo design manner ,, hence esy to optimize ***)
+     Now after this first of all I tried to optimize my code in the object oriented way (Hence my current code has been designed in oo design manner , hence easy to optimize ***)
      <br/> Now after this I added the following functionalities in my app:
 <br/><br/>
     <ol>
@@ -41,12 +41,12 @@ padding: 70px;
      I added two types of shoots in the player object :
      First , when the left button of mouse is pressed and 2nd when the right button is pressed.(This has been named as a special attack)
 
-     I used sprite animations to show the movement of players and enemies so that it looks more real. Also the direction of shooting is being controlled thorugh the mouse.</li>
+     I used <b>sprite animations</b> to show the movement of players and enemies so that it looks more real. Also the direction of shooting is being controlled by the mouse.</li>
      <br/>
       <li> <b>Enemy</b>:(Enemy Class overrides the parent class Actor)
-     I also gave the enemy a power to shoot, the bullets are being fired by eneies at regular intervals at the direction of player .
-     One more intersting thing . Now the enemies can come from any direction and these will always keep following the player.( :P :P )
-     One intersting thingabout the bulets thrwon by the enemies is that it disappears after a time span defined by me inside the code.
+     I also gave the enemy a power to shoot, the bullets are being fired by enemies at regular intervals in the direction of player.
+     One more intersting thing,Now the enemies can come from any direction and they will always keep following the player.( :P :P )
+     And the bullets thrown by the enemies is that it disappears after a time span defined by me inside the code.
 </li>
 <br/>
       <li>
@@ -54,17 +54,32 @@ padding: 70px;
         
     <b>Update</b>: (class for two types of update objects)
            I created a new class which is responsible for creating two types of health objects in the game. i.e Two healths (+ sign in game) are being generated in the game at random places.
-             First Type(Yellow): When user collides with this health its power increases by an amount of 4.
-             Second Type(Purple): When user collides with this health its attacking speed increases by a conciderable amount. 
+            <b> First Type(Yellow):</b> When user collides with yellow health health its power increases by an amount of 4.
+             <b>Second Type(Purple): When user collides with this health, its attacking speed increases by a considerable amount. </b>
 
       </li>
       <br/>
       <li>
         
-     <b>Map</b>:It basically represent the background of the game. Its basically an imgage, but we cant go to certain places ie (Stones , house, doors etc), Used map collision for the same.
+     <b>Map</b>:It basically represents the background of the game. It is an imgage, but a player cant go to certain places i.e (Stones , house, doors etc).<b> Used map collision for the same.</b>
 
       </li>
 
+<br/>
+<li>
+  <b>And I have commented out code at various points to have better understanding of my logic.</b>
+</li>
+<br/>
+Some of the resources that helped me to get this task done :
+<li>
+<ul>
+  <li>For js,jQuery and Canvas : <a href="https://www.w3schools.com/ ">W3schools</a></li>
+  <li>Icons  : <a href="https://findicons.com/icon/164279/bullet_orange/ ">Find Icons</a></li>
+    <li>Key Codes  : <a href="https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes ">Key Codes</a></li>
+      <li>Maps : <a href="http://www.mapeditor.org/">Maps - Just for reference didnt use it</a></li>
+
+</ul>
+</li>
     
     </ol>
 
@@ -80,7 +95,7 @@ padding: 70px;
 
   <li>
     Structural Knowledge:
-          Heierarchy of my classes
+          <b>Hierarchy of my classes </b>
 <br/><br/>
           Entity&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Map(Different Class)<br/>
              |<br/>
@@ -92,6 +107,10 @@ padding: 70px;
   </li>
      
 
+
+
+<br/> <br/><br/><br/>
+<b><li>######### <br/>       Still if any functionality is missing out in my game, let me know will try to sort it out.                       </li> </b>
 
     
 
